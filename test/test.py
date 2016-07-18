@@ -6,7 +6,7 @@
 # Requires Google Protobuf for Python and SciPy
 
 import sys
-sys.path.append('/caffe/python')#set your caffe/python route
+sys.path.append('./caffe/python')#set your caffe/python route
 import os
 import argparse
 import code
