@@ -1,4 +1,4 @@
-#:::::
+#Distinct class-specific saliency maps
 ##Description
 for visualization and segmentation.
 
