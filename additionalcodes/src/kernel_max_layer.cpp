@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <vector>
 #include <cfloat>
-
 #include "caffe/layers/kernel_max_layer.hpp"
 #include "caffe/util/math_functions.hpp"
 
