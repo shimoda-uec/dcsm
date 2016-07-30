@@ -9,7 +9,10 @@ Our codes are based on the Caffe deep learning library.
 Requirements for Caffe and pycaffe (see: Caffe installation instructions)  
 ##Install
 First, you should clone the repository as below.  
-`git clone https://github.com/shimoda-uec/dcsm.git`  
+```
+git clone https://github.com/shimoda-uec/dcsm.git
+```
+
 You need to compile the modified Caffe library.  
 If you compile Caffe in own repository, you should locate our additional codes to your own Caffe library precisely.  
 See additionalcodes/README.md.  
