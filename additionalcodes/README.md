@@ -1,7 +1,6 @@
-#:::::
-##About additional codes
-I implemented additional codes for Caffe.  
-Please localize these additional codes for your Caffe.  
+#About additional codes
+I prepare additional codes to implement my method on the Caffe.  
+Locate these additional codes for your Caffe correctly before compilation.
 src -> <caffe-route>/src/caffe/layers/  
 include -> <caffe-route>/include/caffe/layers/  
 proto -> <caffe-route>/src/caffe/proto/  

@@ -1,4 +1,5 @@
 ##Description
+These codes are demo script.
 You can download a caffemodel frome a blow URL for a test.  
 http://mm.cs.uec.ac.jp/shimoda-k/models/mp512_iter_20000.caffemodel  
 
