@@ -9,23 +9,18 @@ Our codes are based on the Caffe deep learning library.
 Requirements for Caffe and pycaffe (see: Caffe installation instructions)  
 ##Install
 First, you should clone the repository as below.
-"""
-git clone https://github.com/shimoda-uec/dcsm.git
-"""
+`git clone https://github.com/shimoda-uec/dcsm.git`
 You need to compile the modified Caffe library.
 If you compile Caffe in own repository, you should locate our additional codes to your own Caffe library precisely.
 See additionalcodes/README.md.
 ##Run the demo
-"""
-See test/README.md.
-"""
+See test/README.md.  
 ##License and Citation
 Please cite our paper if it helps your research:
-"""
-@inproceedings{shimodaECCV16
-    Author = {Shimoda, Wataru and Yanai, Keiji},
-    Title = {Distinct class-specific saliency maps},
-    Booktitle = {International Conference on Computer Vision ({ECCV})},
-    Year = {2016}
-}
+    @inproceedings{shimodaECCV16
+        Author = {Shimoda, Wataru and Yanai, Keiji},
+        Title = {Distinct class-specific saliency maps},
+        Booktitle = {International Conference on Computer Vision ({ECCV})},
+        Year = {2016}
+    }
 """
