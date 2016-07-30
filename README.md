@@ -6,7 +6,7 @@ This repository contains the codes for the "DCSM" weakly supervised semantic seg
 It has been published at ECCV2016.  
 Our codes are based on the Caffe deep learning library.  
 ##Requirements
-Requirements for Caffe and pycaffe (see: Caffe installation instructions)  
+Requirements for Caffe and pycaffe (see: [Caffe installation instructions](http://caffe.berkeleyvision.org/))  
 ##Install
 First, you should clone the repository as below.  
 ```
