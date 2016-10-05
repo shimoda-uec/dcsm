@@ -12,12 +12,12 @@ def conv_setn(bottom,name, nout, ks = 3, stride=1, pad = 0, dilation=1,learn = T
             num_output=nout, pad=pad,dilation=dilation,param=paramn)
     bn = L.ReLU(conv, in_place=True)
     return conv, bn
-def dcsm_setn(prev,bs):
+def dcsm_setn(prev,sig,bs):
     km = L.KernelMax(prev)
     sub = L.SubFix(km)
     mn1 = L.MaxNormalizeFix(sub,prior=3)
     tanh1 = L.TanH(mn1)
-    subs = L.SubStackFix(tanh1,sweepern=3)
+    subs = L.SubStackFix(tanh1,sig)
     mn2 = L.MaxNormalizeFix(subs,prior=3)
     tanh2 = L.TanH(mn2)
     bl = L.Bl(tanh2,newsize=bs)
@@ -32,22 +32,24 @@ def dconv_setn(prev,conv,name,nout, ks = 3, stride=1, pad = 0, dilation=1, learn
 
 
 def vgg_net(total_depth, lmdb, num_classes = 20, acclayer = True):
-    """
-    Generates nets from "Deep Residual Learning for Image Recognition". Nets follow architectures outlined in Table 1. 
-    """
     # figure out network structure
     net_defs = {
-        16:([2, 2, 3, 3,3], "standard"),
+        16:([2, 2, 3, 3, 3], "standard"),
     }
     assert total_depth in net_defs.keys(), "net of depth:{} not defined".format(total_depth)
     nunits_list, unit_type = net_defs[total_depth] # nunits_list a list of integers indicating the number of layers in each depth.
-    nouts = [64, 128, 256, 512,512] # same for all nets
+    nouts = [64, 128, 256, 512, 512] # same for all nets
     pmflag=[0,0,1,1,1]
-    # setup the first couple of layers
-    #lr=False
     lr=True
     n = caffe.NetSpec()
-    n.data = L.Input()
+    d={}
+    d['dim']=[]
+    d['dim'].append(1)
+    d['dim'].append(3)
+    d['dim'].append(512)
+    d['dim'].append(512)
+    n.data = L.Input(shape=[d])
+
     # make the convolutional body
     iii=0
     ppid='data'
@@ -62,7 +64,8 @@ def vgg_net(total_depth, lmdb, num_classes = 20, acclayer = True):
             pid=id
             ppid=relun
         pooln='pool'+str(iii)
-        n[pooln]=L.Pooling(n[ppid], stride = 2, kernel_size = 2,pool=0)
+        maskn='mask'+str(iii)
+        n[pooln],n[maskn]=L.Pooling(n[ppid], stride = 2, kernel_size = 2,pool=0,ntop=2)
         ppid=pooln
 
     n['fc6of'], n['relu6'] = conv_setn(n[ppid],'conv6w', ks = 7, stride = 1, nout = 4096, pad =0,dilation=1,learn=lr)
@@ -71,8 +74,7 @@ def vgg_net(total_depth, lmdb, num_classes = 20, acclayer = True):
 
     n['gp']=L.Pooling(n['fc8'], pool=0,global_pooling=True)
     n['sortid']=L.SortCh(n['gp'], topk=3)
-    n['sweeper'],n['sweepern'],n['sweepeid']=L.AddSweeperFix(n['sortid'] ,sweepern=3,ntop=3)
-    n['signal']=L.MakeSignalFix(n['fc8'],n['sweeper'],n['sweepern'])
+    n['signal']=L.Python(n['sortid'],n['fc8'] ,module='make_signal',layer='MakeSignalLayer')
     n['d7'] = L.Deconvolution(n['signal'], kernel_size=1,num_output=4096,bias_term=False,param=[dict(name='conv8w')])
     n['d7r'],n['d6'] = dconv_setn(n['d7'],n['fc7of'],'conv7w',4096,ks = 1,stride = 1)
     n['d6r'],n['d5'] = dconv_setn(n['d6'],n['fc6of'],'conv6w',512,ks = 7, stride = 1,  pad =0,dilation=1)
@@ -92,7 +94,8 @@ def vgg_net(total_depth, lmdb, num_classes = 20, acclayer = True):
            pooln='unpool_'+str(iii)
            poolmn='pool_'+str(iii)+'m'
            convn='conv'+str(iii)+'_3'
-           n[pooln]=L.UnpoolingNomask(n[ppid],n[convn], stride = 2, kernel_size = 2)
+           maskn='mask'+str(iii)
+           n[pooln]=L.Unpooling(n[ppid],n[maskn],n[convn], stride = 2, kernel_size = 2)
            ppid=pooln
         for dunit in range(1, dnunits + 1): # for each unit. Enumerate from 1.
             dunit=3+1-dunit
@@ -110,17 +113,15 @@ def vgg_net(total_depth, lmdb, num_classes = 20, acclayer = True):
             tanh2=dconvn+'tanh2'
             bl=dconvn+'bl'
             pn='conv'+str(iii)+'_'+str(dunit)+'w'
-            #bnn='bn'+str(iii)+'_'+str(unit)
             print dconvn
             n[drelun],n[dconvn] = dconv_setn(n[ppid],n[convn],pn,  nout = dnout,ks = 3, stride = 1, pad = 1,dilation=1)
-            n[km],n[sub],n[mn1],n[tanh1],n[subs],n[mn2],n[tanh2],n[bl]= dcsm_setn(n[dconvn],bs)
+            n[km],n[sub],n[mn1],n[tanh1],n[subs],n[mn2],n[tanh2],n[bl]= dcsm_setn(n[dconvn],n['signal'],bs)
             pid=id
             ppid=dconvn
             pnout=dnout
             alln=alln+1
     n['dcsm'] = L.Eltwise(n['dconv5_3bl'],n['dconv5_2bl'],n['dconv5_1bl'],n['dconv4_3bl'],n['dconv4_2bl'],n['dconv4_1bl'],n['dconv3_3bl'],n['dconv3_2bl'],n['dconv3_1bl'])
-    #n['restore'] = L.RestoreForDcsm(n['dcsm'],n['objn'],n['sweepern'],n['overlapid'],shape=bs,bn=bnn)
-    #n['dcsmmask'] = L.ArgmaxForDcsmDsize(n['restore'],n['objn'],n['objid'],size=bs,batchsize=bn)
+    n['dcsmn']=L.MaxNormalizeFix(n['dcsm'], prior=1)
     return n.to_proto()
 
 with open('./gdep.prototxt', 'w') as f:

@@ -1,10 +1,4 @@
 #! /usr/bin/python
-# file: import-caffe-.py
-# brief: Caffe importer for DagNN
-# author: Karel Lenc and Andrea Vedaldi
-
-# Requires Google Protobuf for Python and SciPy
-
 import sys
 sys.path.append('./caffe/python')#set your caffe/python route
 import os
@@ -48,27 +42,24 @@ im3 = np.zeros((1,ims[0],ims[1],im2[0].shape[2]),dtype=np.float32)
 im3[0]=im2[0]
 caffe_in = np.zeros(np.array(im3.shape)[[0, 3, 1, 2]],dtype=np.float32)
 caffe_in[0]=data.transformer.preprocess('data', im3[0])
-#labelsk=np.zeros((1,20,1,1),dtype=np.float32)
-#labelsk[0,1,0,0]=1
-#labelsk[0,15,0,0]=1
-#out = data.forward_all(**{'data': caffe_in,'label':labelsk})
 out = data.forward_all(**{'data': caffe_in})
-sal=data.blobs['dcrmn'].data
-#print sal.shape
+map=data.blobs['dcsmn'].data
+id=data.blobs['sortid'].data
 rsize=512
 zeronp=np.zeros((rsize,rsize),dtype=np.float32)
-for i in range(sal.shape[0]):
-		salkp=sal[i,0,:,:]
-		salk=np.fmax(salkp,zeronp)
-		salk2=np.zeros((rsize,rsize,3),dtype=np.float32)
-		salk2[:,:,0]=salk
-		salk2[:,:,1]=salk
-		salk2[:,:,2]=salk
-		salk3=salk2*255
-		salint = salk3.astype(np.uint8)
-		pil_img = Image.fromarray(salint)
+ctg=['plane','bicycle','bird','boat','bottle','bus','car','cat','chair','cow','dog','dtable','horse','moterbike','person','plant','sheep','sofa','train','tv']
+for i in range(map.shape[0]):
+		mapk=map[i,0,:,:]
+		mapk=np.fmax(mapk,zeronp)
+		mapk2=np.zeros((rsize,rsize,3),dtype=np.float32)
+		mapk2[:,:,0]=mapk
+		mapk2[:,:,1]=mapk
+		mapk2[:,:,2]=mapk
+		mapk3=mapk2*255
+		mapint = mapk3.astype(np.uint8)
+		pil_img = Image.fromarray(mapint)
 		path='./'
-		sn=path+'/'+str(i)+'dcrm.jpg'
+		sn=path+'/'+ctg[int(id[0,i,0,0])]+'_rank'+str(i)+'_dcsm.jpg'
 		pil_img.save(sn)
 
 

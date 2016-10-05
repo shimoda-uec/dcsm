@@ -2,7 +2,14 @@ layer {
   name: "data"
   type: "Input"
   top: "data"
-  input_param { shape: { dim: 1 dim: 3 dim: 512 dim: 512 } }
+  input_param {
+    shape {
+      dim: 1
+      dim: 3
+      dim: 512
+      dim: 512
+    }
+  }
 }
 layer {
   name: "conv1_1"
@@ -53,6 +60,7 @@ layer {
   type: "Pooling"
   bottom: "conv1_2"
   top: "pool1"
+  top: "mask1"
   pooling_param {
     pool: MAX
     kernel_size: 2
@@ -108,6 +116,7 @@ layer {
   type: "Pooling"
   bottom: "conv2_2"
   top: "pool2"
+  top: "mask2"
   pooling_param {
     pool: MAX
     kernel_size: 2
@@ -425,23 +434,15 @@ layer {
   }
 }
 layer {
-  name: "sweeper"
-  type: "AddSweeperFix"
-  bottom: "sortid"
-  top: "sweeper"
-  top: "sweepern"
-  top: "sweepeid"
-  add_sweeper_param {
-    sweepern: 3
-  }
-}
-layer {
   name: "signal"
-  type: "MakeSignalFix"
+  type: "Python"
+  bottom: "sortid"
   bottom: "fc8"
-  bottom: "sweeper"
-  bottom: "sweepern"
   top: "signal"
+  python_param {
+    module: "make_signal"
+    layer: "MakeSignalLayer"
+  }
 }
 layer {
   name: "d7"
@@ -572,10 +573,8 @@ layer {
   name: "dconv5_3substack"
   type: "SubStackFix"
   bottom: "dconv5_3tanh1"
+  bottom: "signal"
   top: "dconv5_3substack"
-  add_sweeper_param {
-    sweepern: 3
-  }
 }
 layer {
   name: "dconv5_3mn2"
@@ -656,10 +655,8 @@ layer {
   name: "dconv5_2substack"
   type: "SubStackFix"
   bottom: "dconv5_2tanh1"
+  bottom: "signal"
   top: "dconv5_2substack"
-  add_sweeper_param {
-    sweepern: 3
-  }
 }
 layer {
   name: "dconv5_2mn2"
@@ -740,10 +737,8 @@ layer {
   name: "dconv5_1substack"
   type: "SubStackFix"
   bottom: "dconv5_1tanh1"
+  bottom: "signal"
   top: "dconv5_1substack"
-  add_sweeper_param {
-    sweepern: 3
-  }
 }
 layer {
   name: "dconv5_1mn2"
@@ -836,10 +831,8 @@ layer {
   name: "dconv4_3substack"
   type: "SubStackFix"
   bottom: "dconv4_3tanh1"
+  bottom: "signal"
   top: "dconv4_3substack"
-  add_sweeper_param {
-    sweepern: 3
-  }
 }
 layer {
   name: "dconv4_3mn2"
@@ -920,10 +913,8 @@ layer {
   name: "dconv4_2substack"
   type: "SubStackFix"
   bottom: "dconv4_2tanh1"
+  bottom: "signal"
   top: "dconv4_2substack"
-  add_sweeper_param {
-    sweepern: 3
-  }
 }
 layer {
   name: "dconv4_2mn2"
@@ -1004,10 +995,8 @@ layer {
   name: "dconv4_1substack"
   type: "SubStackFix"
   bottom: "dconv4_1tanh1"
+  bottom: "signal"
   top: "dconv4_1substack"
-  add_sweeper_param {
-    sweepern: 3
-  }
 }
 layer {
   name: "dconv4_1mn2"
@@ -1100,10 +1089,8 @@ layer {
   name: "dconv3_3substack"
   type: "SubStackFix"
   bottom: "dconv3_3tanh1"
+  bottom: "signal"
   top: "dconv3_3substack"
-  add_sweeper_param {
-    sweepern: 3
-  }
 }
 layer {
   name: "dconv3_3mn2"
@@ -1184,10 +1171,8 @@ layer {
   name: "dconv3_2substack"
   type: "SubStackFix"
   bottom: "dconv3_2tanh1"
+  bottom: "signal"
   top: "dconv3_2substack"
-  add_sweeper_param {
-    sweepern: 3
-  }
 }
 layer {
   name: "dconv3_2mn2"
@@ -1268,10 +1253,8 @@ layer {
   name: "dconv3_1substack"
   type: "SubStackFix"
   bottom: "dconv3_1tanh1"
+  bottom: "signal"
   top: "dconv3_1substack"
-  add_sweeper_param {
-    sweepern: 3
-  }
 }
 layer {
   name: "dconv3_1mn2"
@@ -1312,10 +1295,10 @@ layer {
   top: "dcsm"
 }
 layer {
-  name: "dcrmn"
+  name: "dcsmn"
   type: "MaxNormalizeFix"
   bottom: "dcsm"
-  top: "dcrmn"
+  top: "dcsmn"
   max_normalize_param {
     prior: 1
   }

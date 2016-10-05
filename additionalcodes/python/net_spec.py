@@ -162,6 +162,8 @@ class Function(object):
                        stn='Convolution'
                     if stn=='UnpoolingNoshape':
                        stn='Pooling'
+                    if stn=='Unpooling':
+                       stn='Pooling'
                     if stn=='UnpoolingNoshapeNomask':
                        stn='Pooling'
                     if stn=='UnpoolingNomask':
