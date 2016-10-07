@@ -5,6 +5,9 @@ By Watal Shimoda, Keiji Yanai.
 This repository contains the codes for the "DCSM" weakly supervised semantic segmentation method.  
 It has been published at ECCV2016.  
 Our codes are based on the Caffe deep learning library.  
+Note that in the paper we tested with MatConvNet implementation.
+You can also get that from here [MatConvNet implementaion](https://github.com/shimoda-uec/mat_dcsm).
+Caluculation detail and computational cost are different.
 ##Requirements
 Requirements for Caffe and pycaffe (see: [Caffe installation instructions](http://caffe.berkeleyvision.org/))  
 ##Install
