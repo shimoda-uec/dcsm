@@ -10,9 +10,9 @@ You can also get that from here [MatConvNet implementaion](https://github.com/sh
 Caluculation detail and computational cost are different.
 ##Requirements
 Requirements for Caffe and pycaffe (see: [Caffe installation instructions](http://caffe.berkeleyvision.org/))  
-To use python layer you need to modify your Makefile.config before compiling and through python path to "lib" directry.  
->-#WITH_PYTHON_LAYER := 1
->+WITH_PYTHON_LAYER := 1
+If you got error for python layer, you shold check your Makefile.config and through python path to "lib" directry.  
+>-#WITH_PYTHON_LAYER := 1  
+>+WITH_PYTHON_LAYER := 1  
 ##Install
 First, you should clone the repository as below.  
 ```
