@@ -11,6 +11,7 @@ Caluculation detail and computational cost are different.
 ##Requirements
 Requirements for Caffe and pycaffe (see: [Caffe installation instructions](http://caffe.berkeleyvision.org/))  
 If you got error for python layer, you shold check your Makefile.config and through python path to "lib" directry.  
+
 >-#WITH_PYTHON_LAYER := 1  
 >+WITH_PYTHON_LAYER := 1  
 ##Install
