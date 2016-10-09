@@ -14,6 +14,7 @@ If you got error for python layer, you shold check your Makefile.config and thro
 
 >-#WITH_PYTHON_LAYER := 1  
 >+WITH_PYTHON_LAYER := 1  
+
 ##Install
 First, you should clone the repository as below.  
 ```
