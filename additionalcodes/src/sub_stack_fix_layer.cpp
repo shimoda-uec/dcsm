@@ -7,7 +7,7 @@
 namespace caffe {
 
 template <typename Dtype>
-void crLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+void SubStackFixLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
   AddSweeperParameter sweeper_param = this->layer_param_.add_sweeper_param();
   sweepern_=sweeper_param.sweepern();
