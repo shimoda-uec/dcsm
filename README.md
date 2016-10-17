@@ -32,7 +32,7 @@ Please cite our paper if it helps your research:
 @inproceedings{shimodaECCV16  
   Author = {Shimoda, Wataru and Yanai, Keiji},  
   Title = {Distinct class-specific saliency maps},  
-  Booktitle = {International Conference on Computer Vision ({ECCV})},  
+  Booktitle = {European Conference on Computer Vision ({ECCV})},  
   Year = {2016}  
 }  
 ```
