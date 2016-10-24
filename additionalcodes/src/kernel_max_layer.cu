@@ -17,9 +17,6 @@ __global__ void KernelForward(const int nthreads, const Dtype* const in,
     const int n = index / (height * width);
     const int h = (index - n * height * width) / height;
     const int w = (index - n * height * width - h * height);
-    //const int w = index % width;
-    //const int h = (index / width) % height;
-    //const int n = index / width / height /channels;
     //const int offset = (n * channels + c) * h * w;
     //const Dtype* const in_slice = in + offset;
     Dtype km=-FLT_MAX;
