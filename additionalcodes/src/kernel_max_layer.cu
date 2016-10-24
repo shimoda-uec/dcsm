@@ -14,9 +14,9 @@ __global__ void KernelForward(const int nthreads, const Dtype* const in,
   CUDA_KERNEL_LOOP(index, nthreads) {
     // find out the local index
     // find out the local offset
-    const int w = index % width;
-    const int h = (index / width) % height;
-    const int n = index / width / height;
+    const int n = index / (height * width);
+    const int h = (index - n * height * width) / height;
+    const int w = (index - n * height * width - h * height);
     //const int offset = (n * channels + c) * h * w;
     //const Dtype* const in_slice = in + offset;
     Dtype km=-FLT_MAX;
@@ -35,7 +35,7 @@ void KernelMaxLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
   const Dtype* bottom_data = bottom[0]->gpu_data();//derivative
   Dtype* top_data = top[0]->mutable_gpu_data();
-  const int count = bottom[0]->count();
+  const int count = top[0]->count();
   channels_ = bottom[0]->channels();
   height_ = bottom[0]->height();
   width_ = bottom[0]->width();
